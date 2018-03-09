@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Train Assignment</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="buzz">
+
+    <div class="container">
+        <div class="jumbotron jumbotron-fluid">
+
+            <span class="title">
+
+                <h1 class="display-4">
+                    <i style="font-size:48px"></i> Anytime is Train Time </h1>
+                <h3>Choo Choo Choo</h3>
+
+            </span>
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <span id="searchParam" style="font-size:20px"> Current Train Schedule </span>
+            </div>
+            <div class="top-Articles">
+
+                <div class="articles-section">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Train Name</th>
+                                <th scope="col">Destination</th>
+                                <th scope="col">Frequency (min)</th>
+                                <th scope="col">Next Arrival</th>
+                                <th scope="col">Minutes Away</th>
+                                <!-- <th scope="col">Total Billed ($)</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+
+                <span id="searchParam" style="font-size:20px"> Add Train </span>
+            </div>
+            <div class="card-body">
+
+                <form>
+                    <div class="form-group">
+                        <label for="trainName">Train Name:</label>
+                        <input type="text" class="form-control" id="trainName" placeholder="" name="trnName">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="destination">Destination</label>
+                        <input type="text" class="form-control" id="destination" placeholder="" name="destination">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="arrivalTime">First Train Time (HH:mm - military time)</label>
+                        <input type="time" class="form-control" id="arrivalTime" placeholder="" name="arrivalTime">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="freqRate">Frequency (min)</label>
+                        <input type="minute" class="form-control" id="freqRate" placeholder="" name="freqRate">
+                    </div>
+
+                    <button type="submit" id="submitBTN" class="btn btn-default buttons">
+                        <span style="font-size:12px"></span>Submit</button>
+                </form>
+
+
+            </div>
+        </div>
+        <br>
+        <br>
+
+        <!-- Firebase -->
+        <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+        <!-- MomentJS -->
+        <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+
+        <script>
+            // console.log(moment('12/13/1901', 'DD/MM/YYYY').format('ddd MMM, DD, YYYY'))
+
+            console.log(moment().format('LT'))
+
+
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyAjECb1FP5TCjIIF7qd0cf2SSZXTNe_Lcc",
+                authDomain: "train-project-fb0b6.firebaseapp.com",
+                databaseURL: "https://train-project-fb0b6.firebaseio.com",
+                projectId: "train-project-fb0b6",
+                storageBucket: "train-project-fb0b6.appspot.com",
+                messagingSenderId: "954477809916"
+            };
+
+            firebase.initializeApp(config)
+
+            var database = firebase.database();
+
+            $('#submitBTN').on('click', function (event) {
+                event.preventDefault()
+                // grab user input/
+
+                // train name//
+                var trainName = $("#trainName").val().trim()
+                // destination//
+                var destinationName = $('#destination').val().trim()
+                // arrival time//
+                var timeAcc = moment($('#arrivalTime').val().trim(), 'hh:mm').format('LT');
+                // minute = $('#freqRate').val().trim()
+                // frequency//
+                var minuteAcc = parseInt($('#freqRate').val().trim())
+
+                // hold data local//
+                var users = {
+                    name: trainName,
+                    destination: destinationName,
+                    time: timeAcc,
+                    minute: minuteAcc
+
+                };
+                // upload data to database//
+                database.ref().push(users);
+
+                console.log(users.trainName);
+                console.log(users.destinationName);
+                console.log(users.timeAcc);
+                console.log(users.minuteAcc);
+
+                // alert//
+                alert("input success");
+
+                // clears text boxes//
+                $("#trainName").val("");
+                $('#destination').val("");
+                $('#arrivalTime').val("");
+                $('#freqRate').val("");
+            });
+            // create firebase event for adding train data to the html table//
+            database.ref().on("child_added", function (childSnapshot, prevChildKey) {
+                console.log(childSnapshot.val());
+            })
+            // store data into variable//
+            var trainName = childSnapshot.val().name;
+            var destinationName = childSnapshot.val().destination;
+            var timeAcc = childSnapshot.val().time;
+            var minuteAcc = childSnapshot.val().minute;
+
+            console.log(trainName);
+            console.log(destinationName);
+            console.log(timeAcc);
+            console.log(minuteAcc);
+
+            var timeStart = moment.unix(timeAcc).format('LT');
+
+            // calculate train minutes away//
+            var minutesAway = moment().diff(moment, unix(timeAcc, "X"), "timeStart")
+            moment.unix(1318781876);
+
+            console.log(minutesAway);
+
+            // calculate frequency//
+            var frequency = minutesAway * timeStart;
+            console.log(frequency);
+            // add data into table//
+            $(".table").append("<tr><td>" + trainName + "</td><td>" + destinationName + "</td><td>" +
+                timeStart + "</td><td>" + minutesAway + "</td><td>" + minuteAcc + "</td><td>" + frequency + "</td></tr>");
+
+            // users.orderByChild('name').limitToFirst(1).on('child_added', function (snap) {
+            //     console.log(snap.val())
+            // });
+
+                // users.orderByChild('name').limitToLast(1).on('child_added', function (snap) {
+                //     console.log(snap.val())
+                // })
+            // })
+        </script>
+</body>
+
+</html>
