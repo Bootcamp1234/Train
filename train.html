@@ -72,7 +72,7 @@
                 <form>
                     <div class="form-group">
                         <label for="trainName">Train Name:</label>
-                        <input type="text" class="form-control" id="trainName" placeholder="" name="trnName">
+                        <input type="text" class="form-control" id="train" placeholder="" name="trnName">
                     </div>
 
                     <div class="form-group">
@@ -81,7 +81,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="arrivalTime">First Train Time (HH:mm - military time)</label>
+                        <label for="time">First Train Time (HH:mm - military time)</label>
                         <input type="time" class="form-control" id="arrivalTime" placeholder="" name="arrivalTime">
                     </div>
 
@@ -112,7 +112,7 @@
         <script>
             // console.log(moment('12/13/1901', 'DD/MM/YYYY').format('ddd MMM, DD, YYYY'))
 
-            console.log(moment().format('LT'))
+            // console.log(moment().format('LT'))
 
 
             // Initialize Firebase
@@ -134,7 +134,7 @@
                 // grab user input/
 
                 // train name//
-                var trainName = $("#trainName").val().trim()
+                var trainName = $("#train").val().trim()
                 // destination//
                 var destinationName = $('#destination').val().trim()
                 // arrival time//
@@ -163,7 +163,7 @@
                 alert("input success");
 
                 // clears text boxes//
-                $("#trainName").val("");
+                $("#train").val("");
                 $('#destination').val("");
                 $('#arrivalTime').val("");
                 $('#freqRate').val("");
@@ -195,7 +195,7 @@
             var frequency = minutesAway * timeStart;
             console.log(frequency);
             // add data into table//
-            $(".table").append("<tr><td>" + trainName + "</td><td>" + destinationName + "</td><td>" +
+            $(".table").append("<tr><td>" + train + "</td><td>" + destinationName + "</td><td>" +
                 timeStart + "</td><td>" + minutesAway + "</td><td>" + minuteAcc + "</td><td>" + frequency + "</td></tr>");
 
             // users.orderByChild('name').limitToFirst(1).on('child_added', function (snap) {
